@@ -1,15 +1,542 @@
 <!--
-  Sherpa demo embed (reference only)
+  GHL Custom Code Snippet (paste into GoHighLevel)
 
-  Replace the base URL below:
-    https://YOUR-VERCEL-DOMAIN.vercel.app
+  Submits multipart/form-data to:
+    https://sherpa-demo-2.vercel.app/api/demo/submit
 
-  This form submits multipart/form-data to:
-    POST /api/demo/submit
-
-  Then redirects to the returned redirectUrl:
+  Redirects to:
     /demo-review?sid=demo_<uuid>
 -->
+
+<div id="sherpa-demo-form">
+  <div class="sherpa-card">
+    <div class="sherpa-eyebrow">Analyze My Call</div>
+
+    <h3>Upload your last call. We'll show you where it slipped.</h3>
+
+    <p class="sherpa-subtext">
+      Messy is fine. Rough is fine. We're not grading you.
+    </p>
+
+    <div class="sherpa-grid sherpa-grid-2">
+      <div>
+        <label>Name</label>
+        <input id="sherpaName" type="text" placeholder="Your name" />
+      </div>
+
+      <div>
+        <label>Email</label>
+        <input id="sherpaEmail" type="email" placeholder="you@company.com" />
+      </div>
+    </div>
+
+    <label>What are you selling?</label>
+    <input id="sherpaOffer" type="text" placeholder="$10K implementation program" />
+
+    <label>Who’s the buyer?</label>
+    <input id="sherpaBuyer" type="text" placeholder="Head of Ops at a mid-size company" />
+
+    <label>Where did it feel off?</label>
+    <input
+      id="sherpaFeltOff"
+      type="text"
+      placeholder="Strong demo, then they needed to talk to the team"
+    />
+
+    <div class="sherpa-grid sherpa-grid-3">
+      <div>
+        <label>Deal value</label>
+        <input id="sherpaDealValue" type="number" placeholder="10000" />
+      </div>
+
+      <div>
+        <label>Deals/month</label>
+        <input id="sherpaDealsPerMonth" type="number" placeholder="20" />
+      </div>
+
+      <div>
+        <label>Close rate %</label>
+        <input id="sherpaCloseRate" type="number" placeholder="25" />
+      </div>
+    </div>
+
+    <label>Upload recording</label>
+    <div class="sherpa-upload-box">
+      <input
+        id="sherpaAudioFile"
+        type="file"
+        accept="audio/*,video/*,.mp3,.mp4,.m4a,.wav,.webm,.mov"
+      />
+      <div>
+        <strong>Audio or video</strong>
+        <span>MP3, MP4, M4A, WAV, WEBM, MOV. Max 25MB.</span>
+      </div>
+    </div>
+
+    <div class="sherpa-divider">
+      <span>or paste transcript</span>
+    </div>
+
+    <label>Paste transcript</label>
+    <textarea id="sherpaTranscript" placeholder="Paste the transcript here..."></textarea>
+
+    <div class="sherpa-actions">
+      <button id="sherpaSubmitBtn" type="button" class="sherpa-primary-btn">
+        Analyze My Call
+      </button>
+
+      <button id="sherpaSampleBtn" type="button" class="sherpa-secondary-btn">
+        Use sample call
+      </button>
+    </div>
+
+    <p id="sherpaStatus" class="sherpa-status">
+      Private. Not stored. Not shared.
+    </p>
+  </div>
+</div>
+
+<style>
+  #sherpa-demo-form {
+    width: 100%;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 14px;
+    box-sizing: border-box;
+    font-family: Inter, Arial, sans-serif;
+    color: #ffffff;
+  }
+
+  #sherpa-demo-form * {
+    box-sizing: border-box;
+  }
+
+  #sherpa-demo-form .sherpa-card {
+    width: 100%;
+    background: #11141a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(245, 180, 0, 0.38);
+    border-radius: 22px;
+    padding: 28px;
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.42);
+  }
+
+  #sherpa-demo-form .sherpa-eyebrow {
+    margin-bottom: 10px;
+    color: #f5b400;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+  }
+
+  #sherpa-demo-form h3 {
+    margin: 0 0 10px;
+    color: #ffffff;
+    font-size: clamp(24px, 4.2vw, 34px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    font-weight: 900;
+  }
+
+  #sherpa-demo-form .sherpa-subtext {
+    margin: 0 0 22px;
+    color: #9ca3af;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  #sherpa-demo-form label {
+    display: block;
+    margin: 14px 0 7px;
+    color: #d1d5db;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 800;
+  }
+
+  #sherpa-demo-form input,
+  #sherpa-demo-form textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 14px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background: #08090b;
+    color: #ffffff;
+    outline: none;
+    font-size: 16px;
+    line-height: 1.4;
+    font-family: inherit;
+  }
+
+  #sherpa-demo-form input::placeholder,
+  #sherpa-demo-form textarea::placeholder {
+    color: rgba(156, 163, 175, 0.72);
+  }
+
+  #sherpa-demo-form input:focus,
+  #sherpa-demo-form textarea:focus {
+    border-color: #f5b400;
+    box-shadow: 0 0 0 3px rgba(245, 180, 0, 0.14);
+  }
+
+  #sherpa-demo-form textarea {
+    min-height: 190px;
+    resize: vertical;
+  }
+
+  #sherpa-demo-form .sherpa-grid {
+    display: grid;
+    gap: 12px;
+    width: 100%;
+  }
+
+  #sherpa-demo-form .sherpa-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #sherpa-demo-form .sherpa-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  #sherpa-demo-form .sherpa-upload-box {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    width: 100%;
+    min-height: 86px;
+    padding: 16px;
+    border-radius: 14px;
+    border: 1px dashed rgba(245, 180, 0, 0.38);
+    background: rgba(245, 180, 0, 0.04);
+  }
+
+  #sherpa-demo-form .sherpa-upload-box input[type='file'] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+    min-height: 86px;
+  }
+
+  #sherpa-demo-form .sherpa-upload-box::before {
+    content: "↑";
+    display: grid;
+    place-items: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 999px;
+    background: #f5b400;
+    color: #08090b;
+    font-size: 22px;
+    font-weight: 900;
+  }
+
+  #sherpa-demo-form .sherpa-upload-box strong {
+    display: block;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 900;
+  }
+
+  #sherpa-demo-form .sherpa-upload-box span {
+    display: block;
+    margin-top: 4px;
+    color: #9ca3af;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  #sherpa-demo-form .sherpa-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0 4px;
+    color: #9ca3af;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  #sherpa-demo-form .sherpa-divider::before,
+  #sherpa-demo-form .sherpa-divider::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  #sherpa-demo-form .sherpa-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  #sherpa-demo-form button {
+    appearance: none;
+    border: 0;
+    font-family: inherit;
+  }
+
+  #sherpa-demo-form .sherpa-primary-btn,
+  #sherpa-demo-form .sherpa-secondary-btn {
+    min-height: 52px;
+    border-radius: 12px;
+    padding: 15px 20px;
+    font-size: 15px;
+    line-height: 1;
+    font-weight: 900;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+  }
+
+  #sherpa-demo-form .sherpa-primary-btn {
+    flex: 1 1 240px;
+    background: #f5b400;
+    color: #08090b;
+  }
+
+  #sherpa-demo-form .sherpa-primary-btn:hover {
+    background: #ffc72c;
+    transform: translateY(-1px);
+  }
+
+  #sherpa-demo-form .sherpa-secondary-btn {
+    flex: 0 1 180px;
+    background: transparent;
+    color: #f5b400;
+    border: 1px solid rgba(245, 180, 0, 0.36);
+  }
+
+  #sherpa-demo-form .sherpa-secondary-btn:hover {
+    background: rgba(245, 180, 0, 0.08);
+    transform: translateY(-1px);
+  }
+
+  #sherpa-demo-form button:disabled {
+    opacity: 0.62;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  #sherpa-demo-form .sherpa-status {
+    margin: 14px 0 0;
+    color: #9ca3af;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 720px) {
+    #sherpa-demo-form {
+      padding: 0 10px;
+    }
+
+    #sherpa-demo-form .sherpa-card {
+      padding: 22px 18px;
+      border-radius: 18px;
+    }
+
+    #sherpa-demo-form .sherpa-grid-2,
+    #sherpa-demo-form .sherpa-grid-3 {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+
+    #sherpa-demo-form textarea {
+      min-height: 170px;
+    }
+
+    #sherpa-demo-form .sherpa-actions {
+      flex-direction: column;
+    }
+
+    #sherpa-demo-form .sherpa-primary-btn,
+    #sherpa-demo-form .sherpa-secondary-btn {
+      width: 100%;
+      flex: 1 1 auto;
+    }
+
+    #sherpa-demo-form .sherpa-upload-box {
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<script>
+  (function () {
+    const VERCEL_BASE_URL = "https://sherpa-demo-2.vercel.app";
+    const MAX_FILE_SIZE_BYTES = 25 * 1024 * 1024;
+
+    const sampleTranscript = `Rep: So based on everything you showed me, the main issue is that onboarding is taking too much manual follow-up.
+Prospect: Yeah, exactly. It’s not that the team can’t do it. It’s just messy.
+Rep: That makes sense. The implementation would clean that up and give your ops team one process to follow.
+Prospect: Yeah, I like that.
+Rep: The full implementation is ten thousand dollars. That includes setup, training, and the first 30 days of optimization.
+Prospect: Okay. Yeah, this looks really solid. I just need to run it by my team.
+Rep: Yeah of course, that makes sense. Let me know what they say.
+Prospect: Sounds good.
+Rep: I’ll follow up next week.
+Prospect: Perfect.`;
+
+    const $ = function (id) {
+      return document.getElementById(id);
+    };
+
+    const submitBtn = $("sherpaSubmitBtn");
+    const sampleBtn = $("sherpaSampleBtn");
+    const status = $("sherpaStatus");
+    const fileInput = $("sherpaAudioFile");
+
+    function getValue(id) {
+      const el = $(id);
+      return el && el.value ? el.value.trim() : "";
+    }
+
+    function setValue(id, value) {
+      const el = $(id);
+      if (el) el.value = value;
+    }
+
+    function setStatus(message, color) {
+      if (!status) return;
+      status.innerText = message;
+      status.style.color = color || "#9ca3af";
+    }
+
+    function setLoading(isLoading) {
+      submitBtn.disabled = isLoading;
+      sampleBtn.disabled = isLoading;
+      submitBtn.innerText = isLoading ? "Sending..." : "Analyze My Call";
+    }
+
+    function selectedFile() {
+      return fileInput && fileInput.files && fileInput.files.length
+        ? fileInput.files[0]
+        : null;
+    }
+
+    fileInput.addEventListener("change", function () {
+      const file = selectedFile();
+      if (!file) {
+        setStatus("Private. Not stored. Not shared.", "#9ca3af");
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE_BYTES) {
+        fileInput.value = "";
+        setStatus(
+          "This file is too large for the demo. Upload the strongest 5–10 minute section or paste the transcript.",
+          "#f5b400"
+        );
+        return;
+      }
+
+      setStatus("Selected: " + file.name, "#f5b400");
+    });
+
+    sampleBtn.addEventListener("click", function () {
+      setValue("sherpaName", getValue("sherpaName") || "Demo User");
+      setValue("sherpaEmail", getValue("sherpaEmail") || "demo@example.com");
+      setValue("sherpaOffer", "$10K implementation");
+      setValue("sherpaBuyer", "Head of Ops");
+      setValue("sherpaFeltOff", "Strong demo, then they needed to run it by the team");
+      setValue("sherpaDealValue", "10000");
+      setValue("sherpaDealsPerMonth", "20");
+      setValue("sherpaCloseRate", "25");
+      setValue("sherpaTranscript", sampleTranscript);
+      if (fileInput) fileInput.value = "";
+      setStatus("Sample call loaded. Hit Analyze My Call.", "#f5b400");
+    });
+
+    submitBtn.addEventListener("click", async function () {
+      const email = getValue("sherpaEmail");
+      const transcript = getValue("sherpaTranscript");
+      const audioFile = selectedFile();
+
+      if (!email) {
+        setStatus("Add your email first.", "#f5b400");
+        return;
+      }
+
+      if (!transcript && !audioFile) {
+        setStatus("Paste a transcript or upload a recording first.", "#f5b400");
+        return;
+      }
+
+      if (transcript && transcript.length > 80000) {
+        setStatus(
+          "Transcript is too long for the demo. Paste the strongest section of the call.",
+          "#f5b400"
+        );
+        return;
+      }
+
+      if (audioFile && audioFile.size > MAX_FILE_SIZE_BYTES) {
+        setStatus(
+          "This file is too large for the demo. Upload the strongest 5–10 minute section or paste the transcript.",
+          "#f5b400"
+        );
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("name", getValue("sherpaName"));
+      formData.append("email", email);
+      formData.append("offer", getValue("sherpaOffer"));
+      formData.append("buyer", getValue("sherpaBuyer"));
+      formData.append("feltOff", getValue("sherpaFeltOff"));
+      formData.append("dealValue", getValue("sherpaDealValue") || "10000");
+      formData.append("dealsPerMonth", getValue("sherpaDealsPerMonth") || "20");
+      formData.append("closeRate", getValue("sherpaCloseRate") || "25");
+      formData.append("transcript", transcript);
+      formData.append("source", "ghl_funnel");
+
+      // Prefer transcript if both transcript and audio exist.
+      if (audioFile && !transcript) {
+        formData.append("audioFile", audioFile);
+      }
+
+      setLoading(true);
+      setStatus(
+        audioFile && !transcript
+          ? "Uploading and transcribing your call..."
+          : "Sending your call to Sherpa...",
+        "#9ca3af"
+      );
+
+      try {
+        const res = await fetch(VERCEL_BASE_URL + "/api/demo/submit", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) {
+          const errorText = await res.text().catch(function () {
+            return "";
+          });
+          throw new Error(errorText || "Submission failed");
+        }
+
+        const data = await res.json();
+
+        if (!data.redirectUrl) {
+          throw new Error("No redirect URL returned");
+        }
+
+        window.location.href = data.redirectUrl;
+      } catch (err) {
+        console.error(err);
+        setStatus("Something broke. Try again.", "#f87171");
+        setLoading(false);
+      }
+    });
+  })();
+</script>
 
 <!--
   GHL Custom Code Snippet
