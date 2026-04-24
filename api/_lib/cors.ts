@@ -1,11 +1,19 @@
 const DEV_ORIGINS = ['http://localhost:3000', 'http://localhost:5173']
 
+function parseAllowedOrigins(raw: string | undefined) {
+  if (!raw) return []
+  return raw
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
 function isAllowedOrigin(origin: string | null) {
   if (!origin) return false
   if (DEV_ORIGINS.includes(origin)) return true
-  const allowed = process.env.ALLOWED_GHL_ORIGIN
-  if (!allowed) return false
-  return origin === allowed
+  const allowed = parseAllowedOrigins(process.env.ALLOWED_GHL_ORIGIN)
+  if (!allowed.length) return false
+  return allowed.includes(origin)
 }
 
 export function corsHeaders(origin: string | null) {
