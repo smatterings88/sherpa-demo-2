@@ -23,16 +23,13 @@ const ITEMS: Item[] = [
 
 export function FAQ() {
   return (
-    <div className="mx-auto grid max-w-3xl gap-4">
+    <div className="mx-auto grid max-w-4xl gap-5">
       {ITEMS.map((item) => (
-        <Card
-          key={item.q}
-          className="p-5 sm:p-6"
-        >
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#f5b400]">
+        <Card key={item.q}>
+          <p className="text-sm font-semibold uppercase tracking-[0.14em] text-[#f5b400]">
             {item.q}
           </p>
-          <p className="mt-3 text-sm leading-relaxed text-[#d1d5db]">
+          <p className="mt-4 text-base leading-relaxed text-[#d1d5db]">
             {item.a}
           </p>
         </Card>

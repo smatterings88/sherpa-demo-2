@@ -149,16 +149,16 @@ export function DemoFunnel() {
   }
 
   const fieldLabel = (text: string) => (
-    <label className="mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.18em] text-[#9ca3af]">
+    <label className="mb-2 block text-[11px] font-semibold uppercase tracking-[0.18em] text-[#9ca3af]">
       {text}
     </label>
   )
 
   const inputClass =
-    'w-full rounded-lg border border-white/[0.1] bg-[#0b0d10] px-3 py-2.5 text-sm text-white placeholder:text-[#6b7280] focus:border-[#f5b400]/50 focus:outline-none'
+    'w-full rounded-lg border border-white/[0.12] bg-[#080b10] px-4 py-3.5 text-base text-white placeholder:text-[#6b7280] transition-colors focus:border-[#f5b400]/55 focus:outline-none focus:ring-2 focus:ring-[#f5b400]/25'
 
   return (
-    <div className="mx-auto w-full max-w-[760px] px-5 pb-6">
+    <div className="mx-auto w-full max-w-full pb-2">
       <AnimatePresence mode="wait">
         <motion.div
           key={step}
@@ -168,8 +168,8 @@ export function DemoFunnel() {
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
         >
           {step === 'transcript' ? (
-            <Card>
-              <div className="grid gap-4 sm:grid-cols-2">
+            <Card className="border-white/[0.14] shadow-[0_0_56px_-28px_rgba(245,180,0,0.1)]">
+              <div className="grid gap-5 sm:grid-cols-2">
                 <div className="sm:col-span-1">
                   {fieldLabel('Name')}
                   <input
@@ -192,11 +192,11 @@ export function DemoFunnel() {
                   />
                 </div>
               </div>
-              <div className="mt-5">
+              <div className="mt-6">
                 {fieldLabel('Upload recording')}
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                   <label className="cursor-pointer">
-                    <span className="inline-flex rounded-lg border border-white/[0.12] bg-white/[0.04] px-4 py-2.5 text-xs font-semibold text-white transition-colors hover:bg-white/[0.07]">
+                    <span className="inline-flex rounded-lg border border-white/[0.14] bg-white/[0.06] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/[0.1]">
                       Choose file
                     </span>
                     <input
@@ -209,29 +209,29 @@ export function DemoFunnel() {
                       }}
                     />
                   </label>
-                  <span className="text-xs text-[#6b7280]">
+                  <span className="text-sm text-[#9ca3af]">
                     {recordingLabel
                       ? recordingLabel
                       : 'Audio or video (demo — not uploaded)'}
                   </span>
                 </div>
               </div>
-              <div className="mt-5">
+              <div className="mt-6">
                 {fieldLabel('Paste transcript')}
-                <p className="mb-2 text-xs text-[#6b7280]">
+                <p className="mb-2 text-sm text-[#9ca3af]">
                   Text from your CRM or notes
                 </p>
                 <textarea
                   value={transcript}
                   onChange={(e) => setTranscript(e.target.value)}
                   placeholder="Paste the transcript here..."
-                  rows={10}
-                  className={`${inputClass} min-h-[200px] resize-y font-mono text-[13px] leading-relaxed`}
+                  rows={14}
+                  className={`${inputClass} min-h-[min(22rem,50vh)] resize-y font-mono text-[15px] leading-relaxed sm:min-h-[26rem]`}
                 />
               </div>
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-stretch">
                 <Button
-                  className="w-full sm:w-auto"
+                  className="w-full min-w-0 flex-1 sm:max-w-none sm:flex-[0_1_auto]"
                   onClick={runAnalyze}
                   disabled={!transcript.trim()}
                 >
@@ -239,13 +239,13 @@ export function DemoFunnel() {
                 </Button>
                 <Button
                   variant="secondary"
-                  className="w-full sm:w-auto"
+                  className="w-full sm:w-auto sm:flex-initial"
                   onClick={loadSample}
                 >
                   Use sample call
                 </Button>
               </div>
-              <div className="mt-8 space-y-1 border-t border-white/[0.06] pt-6 text-xs leading-relaxed text-[#6b7280]">
+              <div className="mt-10 space-y-1.5 border-t border-white/[0.08] pt-8 text-sm leading-relaxed text-[#9ca3af]">
                 <p>Private. Not stored. Not shared.</p>
                 <p>Messy is fine.</p>
                 <p>Rough is fine.</p>
@@ -340,11 +340,11 @@ export function DemoFunnel() {
           ) : null}
 
           {step === 'analyzing' ? (
-            <Card className="py-14 text-center">
-              <p className="text-sm font-medium text-[#f5b400]">
+            <Card className="py-16 text-center sm:py-20">
+              <p className="text-lg font-medium text-[#f5b400] sm:text-xl">
                 {ANALYZING_STEPS[analyzingIndex]}
               </p>
-              <p className="mt-4 text-xs text-[#6b7280]">
+              <p className="mt-5 text-sm text-[#9ca3af]">
                 Demo only — runs in your browser. Nothing is sent to a server.
               </p>
             </Card>
@@ -661,7 +661,7 @@ export function DemoFunnel() {
                     key={f.id}
                     type="button"
                     onClick={() => setSelectedFramework(f.id)}
-                    className={`rounded-2xl border p-5 text-left transition-colors ${
+                    className={`rounded-2xl border p-6 text-left transition-colors sm:p-7 ${
                       selectedFramework === f.id
                         ? 'border-[#f5b400]/55 bg-[#f5b400]/[0.07]'
                         : 'border-white/[0.08] bg-[#11141a] hover:border-white/[0.14]'

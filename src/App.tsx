@@ -16,31 +16,38 @@ function scrollToSixty() {
 function GridBackdrop() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 opacity-[0.45]"
+      className="pointer-events-none absolute inset-0 opacity-[0.55]"
       aria-hidden
     >
       <div
         className="absolute inset-0"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
+            linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.055) 1px, transparent 1px)
           `,
-          backgroundSize: '56px 56px',
+          backgroundSize: '48px 48px',
+        }}
+      />
+      <div
+        className="absolute inset-0 opacity-[0.35]"
+        style={{
+          backgroundImage:
+            'repeating-linear-gradient(0deg, transparent, transparent 47px, rgba(245,180,0,0.045) 47px, rgba(245,180,0,0.045) 48px)',
         }}
       />
       <div
         className="absolute inset-0"
         style={{
           background:
-            'radial-gradient(ellipse 70% 50% at 50% -10%, rgba(245,180,0,0.14), transparent 55%)',
+            'radial-gradient(ellipse 85% 55% at 50% -5%, rgba(245,180,0,0.18), transparent 58%)',
         }}
       />
       <div
-        className="absolute inset-0 opacity-[0.12]"
+        className="absolute inset-0 opacity-[0.16]"
         style={{
           backgroundImage:
-            'repeating-linear-gradient(-12deg, transparent, transparent 38px, rgba(245,180,0,0.06) 38px, rgba(245,180,0,0.06) 39px)',
+            'repeating-linear-gradient(-12deg, transparent, transparent 40px, rgba(245,180,0,0.07) 40px, rgba(245,180,0,0.07) 41px)',
         }}
       />
     </div>
@@ -50,41 +57,54 @@ function GridBackdrop() {
 export default function App() {
   return (
     <div className="relative min-h-svh overflow-x-hidden bg-[#0b0d10] text-[#e5e7eb]">
-      <header className="relative border-b border-white/[0.06]">
+      <header className="relative border-b border-white/[0.08]">
         <GridBackdrop />
-        <div className="relative mx-auto max-w-[1100px] px-5 pb-20 pt-16 sm:pb-28 sm:pt-24">
-          <p className="mx-auto max-w-2xl text-center text-sm italic leading-relaxed text-[#9ca3af] sm:text-base">
+        <div className="relative mx-auto max-w-[1100px] px-5 pb-24 pt-20 sm:pb-32 sm:pt-28 md:pb-36 md:pt-32">
+          <p className="mx-auto max-w-2xl text-center text-base italic leading-relaxed text-[#9ca3af] sm:text-lg">
             If you&apos;ve ever gotten off a call thinking, &ldquo;I had
             that…&rdquo;
           </p>
-          <h1 className="mx-auto mt-8 max-w-4xl text-balance text-center text-[1.65rem] font-semibold leading-[1.12] tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.08]">
+          <h1 className="mx-auto mt-10 max-w-[56rem] text-balance text-center text-[1.75rem] font-bold leading-[1.1] tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl lg:leading-[1.06]">
             You didn&apos;t lose the deal at the end.
             <br />
-            You lost it somewhere you didn&apos;t even notice.
+            You{' '}
+            <span className="text-[#f5b400] [text-shadow:0_0_42px_rgba(245,180,0,0.28)]">
+              lost it somewhere you didn&apos;t even notice.
+            </span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-center text-sm font-medium text-[#f5b400] sm:text-base">
+          <p className="mx-auto mt-8 max-w-2xl text-center text-base font-semibold text-[#f5b400] sm:text-lg">
             See the exact moment it slipped{'\u2014'}and what it cost you.
           </p>
-          <div className="mx-auto mt-10 max-w-md space-y-2 text-center text-sm leading-relaxed text-[#d1d5db] sm:text-[15px]">
+          <div className="mx-auto mt-12 max-w-lg space-y-2.5 text-center text-base leading-relaxed text-[#d1d5db] sm:text-lg">
             <p>You&apos;re doing the work.</p>
             <p>The calls are happening.</p>
             <p>The deals are there.</p>
             <p className="pt-2 text-[#9ca3af]">And still… some slip.</p>
           </div>
-          <div className="mt-10 flex flex-col items-center gap-4">
-            <Button
-              className="w-full max-w-xs sm:w-auto"
-              onClick={scrollToDemo}
-            >
-              Analyze My Call
-            </Button>
-            <button
-              type="button"
-              onClick={scrollToSixty}
-              className="text-xs font-medium text-[#f5b400] underline-offset-4 transition-colors hover:text-[#ffc933] hover:underline sm:text-sm"
-            >
-              Don&apos;t have a call? See how it works →
-            </button>
+          <div className="relative mx-auto mt-14 max-w-lg">
+            <div
+              className="pointer-events-none absolute -inset-x-10 -inset-y-6 rounded-3xl"
+              style={{
+                background:
+                  'radial-gradient(closest-side at 50% 50%, rgba(245, 180, 0, 0.14), transparent 85%)',
+              }}
+              aria-hidden
+            />
+            <div className="relative flex flex-col items-center gap-5">
+              <Button
+                className="w-full min-w-[min(100%,17rem)] sm:w-auto"
+                onClick={scrollToDemo}
+              >
+                Analyze My Call
+              </Button>
+              <button
+                type="button"
+                onClick={scrollToSixty}
+                className="text-sm font-medium text-[#f5b400] underline-offset-4 transition-colors hover:text-[#ffc933] hover:underline sm:text-base"
+              >
+                Don&apos;t have a call? See how it works →
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -93,35 +113,37 @@ export default function App() {
         title="It doesn't feel expensive… until you add it up."
         className="border-b border-white/[0.04]"
       >
-        <div className="mx-auto max-w-2xl space-y-4 text-center text-sm leading-relaxed text-[#9ca3af] sm:text-[15px]">
+        <div className="mx-auto max-w-2xl space-y-4 text-center text-base leading-relaxed text-[#9ca3af] sm:text-lg">
           <p>You don&apos;t feel it in the moment.</p>
           <p>One deal slips.</p>
           <p>Then another.</p>
           <p>Then another.</p>
           <p className="pt-2 text-[#d1d5db]">It feels like:</p>
-          <p className="font-mono text-xs text-[#6b7280] sm:text-sm">
+          <p className="font-mono text-sm text-[#6b7280] sm:text-base">
             &ldquo;almost&rdquo; &nbsp;·&nbsp; &ldquo;bad timing&rdquo; &nbsp;·&nbsp;
             &ldquo;they weren&apos;t ready&rdquo;
           </p>
         </div>
-        <p className="mx-auto mt-10 max-w-xl text-center text-xs font-semibold uppercase tracking-[0.2em] text-[#f5b400]">
+        <p className="mx-auto mt-10 max-w-xl text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f5b400]">
           The math
         </p>
         <div className="mx-auto mt-4 max-w-xl">
-          <Card className="border-[#f5b400]/25 bg-[#13161d] text-center">
-            <p className="text-sm font-medium text-white">
+          <Card className="border-[#f5b400]/30 bg-[#13161d] text-center">
+            <p className="text-base font-medium text-white sm:text-lg">
               One $5,000 deal a week
             </p>
-            <p className="mt-3 text-sm text-[#f5b400]">= $260,000 a year.</p>
+            <p className="mt-3 text-base text-[#f5b400] sm:text-lg">
+              = $260,000 a year.
+            </p>
           </Card>
         </div>
-        <p className="mx-auto mt-10 max-w-xl text-center text-sm font-medium text-white">
+        <p className="mx-auto mt-10 max-w-xl text-center text-lg font-semibold text-white sm:text-xl">
           Gone.
         </p>
-        <p className="mx-auto mt-3 max-w-xl text-center text-sm leading-relaxed text-[#9ca3af]">
+        <p className="mx-auto mt-3 max-w-xl text-center text-base leading-relaxed text-[#9ca3af] sm:text-lg">
           Not because your offer was weak.
         </p>
-        <p className="mx-auto mt-1 max-w-xl text-center text-sm leading-relaxed text-[#9ca3af]">
+        <p className="mx-auto mt-1 max-w-xl text-center text-base leading-relaxed text-[#9ca3af] sm:text-lg">
           Because you missed the moment.
         </p>
       </Section>
@@ -131,7 +153,7 @@ export default function App() {
         subtitle="It's not just what you said."
         className="border-b border-white/[0.04]"
       >
-        <div className="mx-auto max-w-2xl space-y-4 text-center text-sm leading-relaxed text-[#d1d5db] sm:text-[15px]">
+        <div className="mx-auto max-w-2xl space-y-4 text-center text-base leading-relaxed text-[#d1d5db] sm:text-lg">
           <p>Something shifts.</p>
           <p>You feel it—but you can&apos;t see it.</p>
           <p>You hesitate.</p>
@@ -147,7 +169,7 @@ export default function App() {
             <br />A moment-of-pressure problem.
           </p>
         </div>
-        <p className="mx-auto mt-12 text-center text-[10px] font-medium uppercase tracking-[0.28em] text-[#f5b400]/80">
+        <p className="mx-auto mt-14 text-center text-[11px] font-medium uppercase tracking-[0.28em] text-[#f5b400]/90">
           signal · pressure detected
         </p>
       </Section>
@@ -156,7 +178,7 @@ export default function App() {
         title="This is where AI changes the game"
         className="border-b border-white/[0.04]"
       >
-        <div className="mx-auto max-w-2xl space-y-4 text-center text-sm leading-relaxed text-[#9ca3af] sm:text-[15px]">
+        <div className="mx-auto max-w-2xl space-y-4 text-center text-base leading-relaxed text-[#9ca3af] sm:text-lg">
           <p>
             This system was trained on real sales conversations—across
             industries, styles, and frameworks.
@@ -164,7 +186,7 @@ export default function App() {
           <p>Different approaches.</p>
           <p>Same breakdowns.</p>
         </div>
-        <ul className="mx-auto mt-10 max-w-xl list-none space-y-3 pl-0 text-left text-sm text-[#d1d5db] sm:text-[15px]">
+        <ul className="mx-auto mt-10 max-w-xl list-none space-y-3.5 pl-0 text-left text-base text-[#d1d5db] sm:text-lg">
           {[
             'Detects where confidence drops',
             'Detects where control shifts',
@@ -183,10 +205,10 @@ export default function App() {
             </li>
           ))}
         </ul>
-        <div className="mx-auto mt-10 max-w-2xl space-y-2 text-center text-sm text-[#d1d5db]">
+        <div className="mx-auto mt-10 max-w-2xl space-y-2 text-center text-base text-[#d1d5db] sm:text-lg">
           <p>Not opinion.</p>
           <p>Not guesswork.</p>
-          <p className="text-white">
+          <p className="font-medium text-white">
             Pattern recognition grounded in real conversations.
           </p>
         </div>
@@ -196,15 +218,15 @@ export default function App() {
         title="How this actually works"
         className="border-b border-white/[0.04]"
       >
-        <div className="mx-auto max-w-2xl space-y-5 text-sm leading-relaxed text-[#d1d5db] sm:text-[15px]">
-          <p className="text-white">This wasn&apos;t built from theory.</p>
+        <div className="mx-auto max-w-2xl space-y-5 text-base leading-relaxed text-[#d1d5db] sm:text-lg">
+          <p className="font-medium text-white">This wasn&apos;t built from theory.</p>
           <p className="text-[#9ca3af]">
             It was trained on real sales conversations—
             <br />
             across industries, deal sizes, and selling styles.
           </p>
           <p className="pt-1 text-[#9ca3af]">Looking for one thing:</p>
-          <p className="text-lg font-semibold text-white">
+          <p className="text-xl font-bold text-white sm:text-2xl">
             Where deals actually break.
           </p>
           <p className="pt-2 text-[#9ca3af]">
@@ -247,24 +269,28 @@ export default function App() {
 
       <section
         id="demo"
-        className="scroll-mt-24 border-b border-white/[0.04] py-14 sm:py-20"
+        className="scroll-mt-24 border-b border-white/[0.06] py-24 sm:py-32"
       >
         <div className="relative mx-auto max-w-[1100px] px-5">
-          <div className="mx-auto mb-10 max-w-[760px] text-center">
-            <h2 className="text-balance text-2xl font-semibold text-white sm:text-3xl md:text-4xl">
-              Run your last call through it
-            </h2>
-            <p className="mt-3 text-sm font-semibold text-[#f5b400] sm:text-base">
-              Analyze My Call
-            </p>
-            <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-[#9ca3af]">
-              Upload a transcript or recording. We&apos;ll handle the rest.
-            </p>
-            <p className="mx-auto mt-2 max-w-lg text-sm leading-relaxed text-[#d1d5db]">
-              Upload your last call. We&apos;ll show you where it slipped.
-            </p>
+          <div className="relative mx-auto max-w-[820px] rounded-2xl border border-white/[0.1] border-t-2 border-t-[#f5b400]/45 bg-[#080a0f] p-1.5 shadow-[0_0_72px_-28px_rgba(245,180,0,0.14),0_28px_72px_-36px_rgba(0,0,0,0.65)] sm:p-2">
+            <div className="rounded-[14px] border border-white/[0.07] bg-[#0b0d10] px-5 py-12 sm:px-10 sm:py-14">
+              <div className="mx-auto mb-12 max-w-[48rem] text-center">
+                <h2 className="text-balance text-3xl font-bold text-white sm:text-4xl md:text-5xl">
+                  Run your last call through it
+                </h2>
+                <p className="mt-4 text-base font-bold tracking-wide text-[#f5b400] sm:text-lg">
+                  Analyze My Call
+                </p>
+                <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-[#9ca3af] sm:text-lg">
+                  Upload a transcript or recording. We&apos;ll handle the rest.
+                </p>
+                <p className="mx-auto mt-3 max-w-xl text-base leading-relaxed text-[#d1d5db] sm:text-lg">
+                  Upload your last call. We&apos;ll show you where it slipped.
+                </p>
+              </div>
+              <DemoFunnel />
+            </div>
           </div>
-          <DemoFunnel />
         </div>
       </section>
 
@@ -276,33 +302,49 @@ export default function App() {
           eyebrow="Demo · 60 sec"
           title="Watch a real deal break in under 60 seconds"
         >
-          <div className="mx-auto max-w-lg">
-            <Card className="space-y-6 text-center">
-              <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#9ca3af]">
-                  Prospect
-                </p>
-                <p className="mt-2 text-base text-white">
-                  &ldquo;I need to think about it.&rdquo;
-                </p>
-              </div>
-              <p className="text-xs text-[#f5b400]">↓</p>
-              <p className="text-sm text-[#d1d5db]">
-                Confidence dropped after pressure entered
-              </p>
-              <p className="text-xs text-[#f5b400]">↓</p>
-              <p className="text-sm text-[#d1d5db]">Control shifted</p>
-              <p className="text-xs text-[#f5b400]">↓</p>
-              <p className="text-sm text-[#d1d5db]">
-                Wrong response reinforced hesitation
-              </p>
-              <div className="pt-2">
-                <Button
-                  className="w-full sm:w-auto"
-                  onClick={scrollToDemo}
-                >
-                  Now run your call
-                </Button>
+          <div className="mx-auto max-w-2xl">
+            <Card className="relative overflow-hidden border-white/[0.14] bg-[#0d1018] text-center shadow-[0_0_0_1px_rgba(245,180,0,0.08),0_24px_64px_-28px_rgba(0,0,0,0.75)]">
+              <div
+                className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#f5b400]/50 to-transparent"
+                aria-hidden
+              />
+              <div className="relative space-y-8">
+                <div className="rounded-xl border border-white/[0.08] bg-black/35 px-6 py-6 sm:px-8 sm:py-8">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#9ca3af]">
+                    Prospect
+                  </p>
+                  <p className="mt-3 text-lg font-medium text-white sm:text-xl">
+                    &ldquo;I need to think about it.&rdquo;
+                  </p>
+                </div>
+                <div className="flex flex-col items-center gap-6">
+                  <div className="flex w-full flex-col items-center gap-3">
+                    <span className="text-lg font-light text-[#f5b400]">↓</span>
+                    <p className="max-w-md text-base leading-relaxed text-[#d1d5db] sm:text-lg">
+                      Confidence dropped after pressure entered
+                    </p>
+                  </div>
+                  <div className="flex w-full flex-col items-center gap-3">
+                    <span className="text-lg font-light text-[#f5b400]">↓</span>
+                    <p className="max-w-md text-base leading-relaxed text-[#d1d5db] sm:text-lg">
+                      Control shifted
+                    </p>
+                  </div>
+                  <div className="flex w-full flex-col items-center gap-3">
+                    <span className="text-lg font-light text-[#f5b400]">↓</span>
+                    <p className="max-w-md text-base leading-relaxed text-[#d1d5db] sm:text-lg">
+                      Wrong response reinforced hesitation
+                    </p>
+                  </div>
+                </div>
+                <div className="pt-4">
+                  <Button
+                    className="w-full sm:w-auto"
+                    onClick={scrollToDemo}
+                  >
+                    Now run your call
+                  </Button>
+                </div>
               </div>
             </Card>
           </div>
@@ -313,7 +355,7 @@ export default function App() {
         title="Why this keeps happening"
         className="border-b border-white/[0.04]"
       >
-        <div className="mx-auto max-w-2xl space-y-4 text-center text-sm leading-relaxed text-[#d1d5db] sm:text-[15px]">
+        <div className="mx-auto max-w-2xl space-y-4 text-center text-base leading-relaxed text-[#d1d5db] sm:text-lg">
           <p>You get on the call.</p>
           <p>It starts strong.</p>
           <p>They&apos;re engaged.</p>
@@ -324,7 +366,7 @@ export default function App() {
           <p className="pt-2">They hesitate.</p>
           <p>They slow down.</p>
           <p>They pull back.</p>
-          <p className="mx-auto mt-6 max-w-md font-mono text-sm text-[#6b7280]">
+          <p className="mx-auto mt-6 max-w-md font-mono text-base text-[#6b7280] sm:text-lg">
             &ldquo;I don&apos;t know what happened…&rdquo;
           </p>
           <p className="pt-6 text-[#9ca3af]">
@@ -340,16 +382,16 @@ export default function App() {
         <FAQ />
       </Section>
 
-      <section className="mx-auto max-w-[1100px] px-5 py-20 sm:py-24">
-        <Card className="mx-auto max-w-3xl border-[#f5b400]/20 text-center">
-          <h2 className="text-balance text-2xl font-semibold text-white sm:text-3xl">
+      <section className="mx-auto max-w-[1100px] px-5 py-28 sm:py-32">
+        <Card className="mx-auto max-w-3xl border-[#f5b400]/25 px-8 py-14 text-center shadow-[0_0_48px_-24px_rgba(245,180,0,0.12)] sm:px-12 sm:py-16">
+          <h2 className="text-balance text-3xl font-bold text-white sm:text-4xl">
             You already did the call.
             <br />
             Now see what actually happened.
           </h2>
-          <div className="mt-8 flex flex-col items-center gap-3">
+          <div className="mt-10 flex flex-col items-center gap-4">
             <Button onClick={scrollToDemo}>Analyze My Call</Button>
-            <p className="max-w-sm text-xs leading-relaxed text-[#6b7280]">
+            <p className="max-w-md text-sm leading-relaxed text-[#9ca3af] sm:text-base">
               Takes 2 minutes. You&apos;ll never hear your calls the same way
               again.
             </p>
@@ -357,9 +399,9 @@ export default function App() {
         </Card>
       </section>
 
-      <footer className="border-t border-white/[0.06] py-12 text-center text-sm text-[#6b7280]">
+      <footer className="border-t border-white/[0.08] py-14 text-center text-base text-[#6b7280]">
         <p className="font-semibold text-[#9ca3af]">Alex the Sherpa</p>
-        <p className="mt-2 text-xs">© 2026</p>
+        <p className="mt-2 text-sm">© 2026</p>
       </footer>
     </div>
   )
