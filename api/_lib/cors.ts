@@ -1,5 +1,11 @@
 const DEV_ORIGINS = ['http://localhost:3000', 'http://localhost:5173']
 
+function getEnv() {
+  const proc = (globalThis as unknown as { process?: { env?: Record<string, string | undefined> } })
+    .process
+  return proc?.env ?? {}
+}
+
 function parseAllowedOrigins(raw: string | undefined) {
   if (!raw) return []
   return raw
@@ -11,7 +17,7 @@ function parseAllowedOrigins(raw: string | undefined) {
 function isAllowedOrigin(origin: string | null) {
   if (!origin) return false
   if (DEV_ORIGINS.includes(origin)) return true
-  const allowed = parseAllowedOrigins(process.env.ALLOWED_GHL_ORIGIN)
+  const allowed = parseAllowedOrigins(getEnv().ALLOWED_GHL_ORIGIN)
   if (!allowed.length) return false
   return allowed.includes(origin)
 }

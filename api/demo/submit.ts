@@ -1,7 +1,7 @@
 import { z } from 'zod'
-import { getRedis, sessionKey } from '../_lib/kv'
-import { getOpenAI } from '../_lib/openai'
-import { optionsResponse, withCors } from '../_lib/cors'
+import { getRedis, sessionKey } from '../_lib/kv.js'
+import { getOpenAI } from '../_lib/openai.js'
+import { optionsResponse, withCors } from '../_lib/cors.js'
 
 export const config = {
   runtime: 'edge',

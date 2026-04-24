@@ -1,8 +1,15 @@
 import { Redis } from '@upstash/redis'
 
+function getEnv() {
+  const proc = (globalThis as unknown as { process?: { env?: Record<string, string | undefined> } })
+    .process
+  return proc?.env ?? {}
+}
+
 export function getRedis() {
-  const url = process.env.KV_REST_API_URL
-  const token = process.env.KV_REST_API_TOKEN
+  const env = getEnv()
+  const url = env.KV_REST_API_URL
+  const token = env.KV_REST_API_TOKEN
   if (!url || !token) {
     throw new Error('KV is not configured (KV_REST_API_URL / KV_REST_API_TOKEN).')
   }

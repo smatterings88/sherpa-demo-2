@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { getRedis, sessionKey } from '../_lib/kv'
-import { optionsResponse, withCors } from '../_lib/cors'
+import { getRedis, sessionKey } from '../_lib/kv.js'
+import { optionsResponse, withCors } from '../_lib/cors.js'
 
 export const config = {
   runtime: 'edge',
