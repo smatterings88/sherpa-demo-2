@@ -3,6 +3,10 @@ import { getRedis, sessionKey } from '../_lib/kv'
 import { getOpenAI } from '../_lib/openai'
 import { optionsResponse, withCors } from '../_lib/cors'
 
+export const config = {
+  runtime: 'edge',
+}
+
 const ALLOWED_MIME = new Set([
   'audio/mpeg',
   'audio/mp3',

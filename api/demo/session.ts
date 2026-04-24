@@ -2,6 +2,10 @@ import { z } from 'zod'
 import { getRedis, sessionKey } from '../_lib/kv'
 import { optionsResponse, withCors } from '../_lib/cors'
 
+export const config = {
+  runtime: 'edge',
+}
+
 const querySchema = z.object({
   sid: z.string().min(1),
 })
