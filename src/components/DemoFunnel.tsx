@@ -11,7 +11,7 @@ import {
   getCloseRateTierLine,
 } from '../lib/demoLogic'
 import type {
-  DemoStep,
+  LegacyDemoStep,
   FrameworkChoice,
   RoleplayEvaluation,
   VoiceTeaserPhase,
@@ -24,7 +24,7 @@ const ANALYZING_STEPS = [
 ] as const
 
 export function DemoFunnel() {
-  const [step, setStep] = useState<DemoStep>('transcript')
+  const [step, setStep] = useState<LegacyDemoStep>('transcript')
   const [sampleMode, setSampleMode] = useState(false)
   const [userName, setUserName] = useState('')
   const [userEmail, setUserEmail] = useState('')
@@ -487,25 +487,29 @@ export function DemoFunnel() {
                 <Button onClick={sendRoleplay}>Send</Button>
               </div>
 
-              {roleplayResult === 'weak' ? (
+              {roleplayResult?.status === 'fail' ? (
                 <div className="mt-6 border-t border-white/[0.08] pt-6">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f5b400]">
                     Sherpa
                   </p>
-                  <p className="mt-2 text-sm text-[#d1d5db]">Stop.</p>
-                  <p className="mt-2 text-sm text-[#d1d5db]">
-                    You felt the tension and made it easier.
-                  </p>
-                  <p className="mt-2 text-sm text-[#d1d5db]">
-                    That&apos;s where control slips.
-                  </p>
-                  <p className="mt-3 text-sm font-medium text-white">
-                    Run it again. Keep it tight.
-                  </p>
+                  {roleplayResult.message.split('\n').map((line, idx) =>
+                    line.trim() ? (
+                      <p
+                        key={idx}
+                        className={
+                          idx === roleplayResult.message.split('\n').length - 1
+                            ? 'mt-3 text-sm font-medium text-white'
+                            : 'mt-2 text-sm text-[#d1d5db]'
+                        }
+                      >
+                        {line}
+                      </p>
+                    ) : null,
+                  )}
                 </div>
               ) : null}
 
-              {roleplayResult === 'strong' ? (
+              {roleplayResult?.status === 'pass' ? (
                 <div className="mt-6 border-t border-white/[0.08] pt-6">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f5b400]">
                     Sherpa
@@ -524,15 +528,21 @@ export function DemoFunnel() {
                 </div>
               ) : null}
 
-              {roleplayResult === 'other' ? (
+              {roleplayResult?.status === 'retry' ? (
                 <div className="mt-6 border-t border-white/[0.08] pt-6">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#f5b400]">
                     Sherpa
                   </p>
-                  <p className="mt-3 text-sm text-[#d1d5db]">Tighter.</p>
-                  <p className="mt-2 text-sm text-[#d1d5db]">
-                    Ask for the decision process.
-                  </p>
+                  {roleplayResult.message.split('\n').map((line, idx) =>
+                    line.trim() ? (
+                      <p
+                        key={idx}
+                        className="mt-2 text-sm text-[#d1d5db]"
+                      >
+                        {line}
+                      </p>
+                    ) : null,
+                  )}
                 </div>
               ) : null}
             </Card>

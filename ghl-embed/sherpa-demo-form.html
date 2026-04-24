@@ -1,0 +1,327 @@
+<!--
+  Sherpa demo embed (reference only)
+
+  Replace the base URL below:
+    https://YOUR-VERCEL-DOMAIN.vercel.app
+
+  This form submits multipart/form-data to:
+    POST /api/demo/submit
+
+  Then redirects to the returned redirectUrl:
+    /demo-review?sid=demo_<uuid>
+-->
+
+<!--
+  GHL Custom Code Snippet
+  - Paste this whole block into GoHighLevel Custom Code
+  - Replace BASE_URL with your deployed Vercel domain
+-->
+
+<style>
+  /* Scoped styles (avoid colliding with GHL theme) */
+  #sherpa-demo-embed {
+    --sbg: #0b0d10;
+    --scard: #11141a;
+    --sborder: rgba(255, 255, 255, 0.12);
+    --smuted: #9ca3af;
+    --stext: #e5e7eb;
+    --sgold: #f5b400;
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial,
+      sans-serif;
+    color: var(--stext);
+  }
+  #sherpa-demo-embed .s-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 10px 0;
+  }
+  #sherpa-demo-embed .s-card {
+    border: 1px solid var(--sborder);
+    background: var(--scard);
+    border-radius: 18px;
+    padding: 18px;
+  }
+  #sherpa-demo-embed .s-title {
+    margin: 0 0 14px;
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+  #sherpa-demo-embed .s-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  @media (min-width: 720px) {
+    #sherpa-demo-embed .s-grid.two {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  #sherpa-demo-embed label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--smuted);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  #sherpa-demo-embed input,
+  #sherpa-demo-embed textarea {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--sborder);
+    background: #080b10;
+    color: var(--stext);
+    border-radius: 10px;
+    padding: 12px 12px;
+    font-size: 16px;
+    outline: none;
+  }
+  #sherpa-demo-embed textarea {
+    min-height: 220px;
+    resize: vertical;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  #sherpa-demo-embed .s-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    margin-top: 14px;
+  }
+  #sherpa-demo-embed button {
+    border: 1px solid rgba(245, 180, 0, 0.45);
+    background: var(--sgold);
+    color: #000;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+  #sherpa-demo-embed button.secondary {
+    border: 1px solid var(--sborder);
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--stext);
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 14px;
+  }
+  #sherpa-demo-embed button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+  #sherpa-demo-embed .s-hint {
+    color: var(--smuted);
+    font-size: 13px;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  #sherpa-demo-embed .s-error {
+    color: #fecaca;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+</style>
+
+<div id="sherpa-demo-embed">
+  <div class="s-wrap">
+    <div class="s-card">
+      <div class="s-title">Submit a call for replay</div>
+
+      <form id="sherpaDemoForm">
+        <div class="s-grid two">
+          <div>
+            <label for="sherpa_name">Name</label>
+            <input id="sherpa_name" name="name" placeholder="Your name" />
+          </div>
+          <div>
+            <label for="sherpa_email">Email</label>
+            <input
+              id="sherpa_email"
+              name="email"
+              placeholder="you@company.com"
+              required
+              type="email"
+            />
+          </div>
+        </div>
+
+        <div class="s-grid two" style="margin-top: 12px">
+          <div>
+            <label for="sherpa_offer">What are you selling?</label>
+            <input
+              id="sherpa_offer"
+              name="offer"
+              placeholder="$10K implementation program"
+            />
+          </div>
+          <div>
+            <label for="sherpa_buyer">Who’s the buyer?</label>
+            <input
+              id="sherpa_buyer"
+              name="buyer"
+              placeholder="Head of Ops at a mid-size company"
+            />
+          </div>
+        </div>
+
+        <div style="margin-top: 12px">
+          <label for="sherpa_feltOff">Where did it feel off?</label>
+          <input
+            id="sherpa_feltOff"
+            name="feltOff"
+            placeholder="Strong demo, then they said they needed to talk to the team"
+          />
+        </div>
+
+        <div class="s-grid two" style="margin-top: 12px">
+          <div>
+            <label for="sherpa_dealValue">Deal value</label>
+            <input id="sherpa_dealValue" name="dealValue" placeholder="10000" />
+          </div>
+          <div>
+            <label for="sherpa_dealsPerMonth">Deals you work per month</label>
+            <input
+              id="sherpa_dealsPerMonth"
+              name="dealsPerMonth"
+              placeholder="20"
+            />
+          </div>
+        </div>
+
+        <div style="margin-top: 12px">
+          <label for="sherpa_closeRate">Current close rate</label>
+          <input id="sherpa_closeRate" name="closeRate" placeholder="25" />
+        </div>
+
+        <div style="margin-top: 12px">
+          <label for="sherpa_audioFile">Upload recording</label>
+          <input
+            id="sherpa_audioFile"
+            name="audioFile"
+            type="file"
+            accept="audio/*,video/*"
+          />
+          <div class="s-hint">Max 25MB. Audio or video.</div>
+        </div>
+
+        <div style="margin-top: 12px">
+          <label for="sherpa_transcript">Paste transcript</label>
+          <textarea
+            id="sherpa_transcript"
+            name="transcript"
+            placeholder="Paste the transcript here..."
+          ></textarea>
+          <div class="s-hint">
+            Private. Not stored. Not shared. Messy is fine. Rough is fine. We’re
+            not grading you.
+          </div>
+        </div>
+
+        <div class="s-row">
+          <button id="sherpa_submitBtn" type="submit">Analyze My Call</button>
+          <button id="sherpa_sampleBtn" class="secondary" type="button">
+            Use sample call
+          </button>
+        </div>
+
+        <div id="sherpa_err" class="s-error" style="display: none"></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Replace with your deployed Vercel domain.
+  const BASE_URL = 'https://sherpa-demo-2.vercel.app'
+
+      const SAMPLE = `Rep: So based on everything you showed me, the main issue is that onboarding is taking too much manual follow-up.
+Prospect: Yeah, exactly. It's not that the team can't do it. It's just messy.
+Rep: That makes sense. The implementation would clean that up and give your ops team one process to follow.
+Prospect: Yeah, I like that.
+Rep: The full implementation is ten thousand dollars. That includes setup, training, and the first 30 days of optimization.
+Prospect: Okay. Yeah, this looks really solid. I just need to run it by my team.
+Rep: Yeah of course, that makes sense. Let me know what they say.
+Prospect: Sounds good.
+Rep: I'll follow up next week.
+Prospect: Perfect.`
+
+      const form = document.getElementById('sherpaDemoForm')
+      const err = document.getElementById('sherpa_err')
+      const submitBtn = document.getElementById('sherpa_submitBtn')
+      const sampleBtn = document.getElementById('sherpa_sampleBtn')
+
+      sampleBtn.addEventListener('click', () => {
+        document.getElementById('sherpa_transcript').value = SAMPLE
+        document.getElementById('sherpa_offer').value = '$10K implementation'
+        document.getElementById('sherpa_buyer').value = 'Head of Ops'
+        document.getElementById('sherpa_feltOff').value = 'Strong demo, then silence'
+        document.getElementById('sherpa_dealValue').value = '10000'
+        document.getElementById('sherpa_dealsPerMonth').value = '20'
+        document.getElementById('sherpa_closeRate').value = '25'
+      })
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault()
+        err.style.display = 'none'
+        err.textContent = ''
+
+        const email = document.getElementById('sherpa_email').value.trim()
+        const transcript = document.getElementById('sherpa_transcript').value.trim()
+        const audioFile = document.getElementById('sherpa_audioFile').files?.[0] || null
+
+        if (!email) {
+          err.textContent = 'Email is required.'
+          err.style.display = 'block'
+          return
+        }
+
+        if (!transcript && !audioFile) {
+          err.textContent = 'Paste a transcript or upload a recording.'
+          err.style.display = 'block'
+          return
+        }
+
+        if (audioFile && audioFile.size > 25 * 1024 * 1024) {
+          err.textContent = 'Audio/video must be 25MB or less.'
+          err.style.display = 'block'
+          return
+        }
+
+        submitBtn.disabled = true
+        submitBtn.textContent = 'Submitting…'
+
+        try {
+          const fd = new FormData(form)
+          fd.set('source', 'ghl_funnel')
+
+          const res = await fetch(`${BASE_URL}/api/demo/submit`, {
+            method: 'POST',
+            body: fd,
+          })
+
+          if (!res.ok) {
+            const t = await res.text().catch(() => '')
+            throw new Error(t || `Submit failed: ${res.status}`)
+          }
+
+          const data = await res.json()
+          if (!data.redirectUrl) throw new Error('Missing redirectUrl.')
+          window.location.href = data.redirectUrl
+        } catch (e2) {
+          err.textContent = e2?.message || 'Submit failed.'
+          err.style.display = 'block'
+        } finally {
+          submitBtn.disabled = false
+          submitBtn.textContent = 'Analyze My Call'
+        }
+      })
+</script>
+

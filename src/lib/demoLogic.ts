@@ -53,15 +53,38 @@ export function getCloseRateTierLine(closeRate: number): string {
 
 export function evaluateRoleplayAttempt(text: string): RoleplayEvaluation {
   const t = text.toLowerCase().trim()
-  if (!t) return 'other'
+  if (!t) {
+    return {
+      status: 'retry',
+      message: 'Tighter.\n\nAsk for the decision process.',
+      issue: null,
+    }
+  }
 
   for (const phrase of WEAK_PHRASES) {
-    if (t.includes(phrase)) return 'weak'
+    if (t.includes(phrase)) {
+      return {
+        status: 'fail',
+        message:
+          "Stop.\n\nYou felt the tension and made it easier.\n\nThat’s where control slips.\n\nRun it again. Keep it tight.",
+        issue: phrase,
+      }
+    }
   }
   for (const phrase of STRONG_PHRASES) {
-    if (t.includes(phrase)) return 'strong'
+    if (t.includes(phrase)) {
+      return {
+        status: 'pass',
+        message: 'There.\n\nSame call. Different outcome.',
+        issue: phrase,
+      }
+    }
   }
-  return 'other'
+  return {
+    status: 'retry',
+    message: 'Tighter.\n\nAsk for the decision process.',
+    issue: null,
+  }
 }
 
 export type BreakpointEvidence = {
