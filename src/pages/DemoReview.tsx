@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Card } from '../components/Card'
@@ -43,6 +43,8 @@ function splitParagraphs(text: string) {
 export function DemoReview() {
   const [params] = useSearchParams()
   const sid = params.get('sid')?.trim() ?? ''
+
+  const analysisStartedRef = useRef(false)
 
   const [sessionState, setSessionState] = useState<
     | { status: 'missingSid' }
@@ -89,12 +91,11 @@ export function DemoReview() {
 
   useEffect(() => {
     if (sessionState.status !== 'ready') return
-    if (analysisState.status !== 'idle') return
+    if (analysisStartedRef.current) return
+    analysisStartedRef.current = true
 
     let cancelled = false
-    const t0 = window.setTimeout(() => {
-      if (!cancelled) setAnalysisState({ status: 'loading', lineIndex: 0 })
-    }, 0)
+    setAnalysisState({ status: 'loading', lineIndex: 0 })
 
     const a = window.setTimeout(() => {
       if (!cancelled) setAnalysisState({ status: 'loading', lineIndex: 1 })
@@ -115,12 +116,11 @@ export function DemoReview() {
 
     return () => {
       cancelled = true
-      window.clearTimeout(t0)
       window.clearTimeout(a)
       window.clearTimeout(b)
       window.clearTimeout(c)
     }
-  }, [sessionState, analysisState.status])
+  }, [sessionState])
 
   const headerLine = useMemo(() => {
     if (sessionState.status !== 'ready') return ''
