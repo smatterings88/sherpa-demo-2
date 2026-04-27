@@ -23,9 +23,11 @@ export async function analyzeDemoSession(sid: string): Promise<DemoAnalysis> {
   return (await res.json()) as DemoAnalysis
 }
 
-export type UltravoxDemoSession =
-  | { mode: 'live'; data: unknown }
-  | { mode: 'placeholder'; message: string }
+export type UltravoxDemoSession = {
+  provider: 'ultravox'
+  callId: string
+  joinUrl: string
+}
 
 export async function startUltravoxDemoSession(
   sid: string,

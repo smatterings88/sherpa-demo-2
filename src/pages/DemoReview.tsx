@@ -3,8 +3,9 @@ import { useSearchParams } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Card } from '../components/Card'
 import { Button } from '../components/Button'
+import { VoiceCloseCall } from '../components/demo/VoiceCloseCall'
 import type { DemoAnalysis, DemoSubmission, RoleplayEvaluation } from '../types/demo'
-import { analyzeDemoSession, fetchDemoSession, startUltravoxDemoSession } from '../lib/demoApi'
+import { analyzeDemoSession, fetchDemoSession } from '../lib/demoApi'
 import { evaluateRoleplayAttempt } from '../lib/demoLogic'
 
 const ANALYZING_STEPS = [
@@ -17,12 +18,6 @@ type AnalysisState =
   | { status: 'idle' }
   | { status: 'loading'; lineIndex: number }
   | { status: 'ready'; analysis: DemoAnalysis }
-  | { status: 'error'; message: string }
-
-type VoiceState =
-  | { status: 'idle' }
-  | { status: 'starting' }
-  | { status: 'placeholder'; phase: 'prompt' | 'interrupt' | 'redeemed' }
   | { status: 'error'; message: string }
 
 function Field({ label, value }: { label: string; value: string }) {
@@ -60,7 +55,7 @@ export function DemoReview() {
 
   const [roleText, setRoleText] = useState('')
   const [roleEval, setRoleEval] = useState<RoleplayEvaluation | null>(null)
-  const [voiceState, setVoiceState] = useState<VoiceState>({ status: 'idle' })
+  const [voiceDone, setVoiceDone] = useState(false)
 
   const checkoutUrl = import.meta.env.VITE_GHL_CHECKOUT_URL as
     | string
@@ -131,27 +126,6 @@ export function DemoReview() {
   const runRoleplay = () => {
     const ev = evaluateRoleplayAttempt(roleText)
     setRoleEval(ev)
-  }
-
-  const startVoiceClose = async () => {
-    if (sessionState.status !== 'ready') return
-    setVoiceState({ status: 'starting' })
-    try {
-      const res = await startUltravoxDemoSession(sessionState.session.sessionId)
-      if (res.mode === 'live') {
-        // If/when a real Ultravox client integration is added, wire it here.
-        setVoiceState({
-          status: 'placeholder',
-          phase: 'prompt',
-        })
-        return
-      }
-      setVoiceState({ status: 'placeholder', phase: 'prompt' })
-    } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : 'Voice close failed. Try again.'
-      setVoiceState({ status: 'error', message: msg })
-    }
   }
 
   const goCheckout = () => {
@@ -388,7 +362,6 @@ export function DemoReview() {
                               <Button
                                 variant="secondary"
                                 onClick={() => {
-                                  setVoiceState({ status: 'idle' })
                                   document
                                     .getElementById('voice-close')
                                     ?.scrollIntoView({ behavior: 'smooth' })
@@ -402,133 +375,15 @@ export function DemoReview() {
                       ) : null}
                     </Card>
 
-                    <Card
-                      id="voice-close"
-                      className="border-white/[0.14]"
-                    >
-                      <h2 className="text-xl font-bold text-white">Close it live</h2>
-                      <p className="mt-4 text-base leading-relaxed text-[#d1d5db]">
-                        Typing it is one thing.
-                        <br />
-                        Closing it live is different.
-                      </p>
-                      <p className="mt-4 text-base leading-relaxed text-[#9ca3af]">
-                        Activate your mic and run the moment out loud.
-                      </p>
+                    {roleEval?.status === 'pass' ? (
+                      <VoiceCloseCall
+                        sid={sessionState.session.sessionId}
+                        onComplete={() => setVoiceDone(true)}
+                      />
+                    ) : null}
 
-                      {voiceState.status === 'idle' ? (
-                        <div className="mt-8">
-                          <Button onClick={startVoiceClose}>
-                            Start voice close
-                          </Button>
-                        </div>
-                      ) : null}
-
-                      {voiceState.status === 'starting' ? (
-                        <div className="mt-8">
-                          <p className="text-base text-[#9ca3af]">
-                            Starting voice close…
-                          </p>
-                        </div>
-                      ) : null}
-
-                      {voiceState.status === 'error' ? (
-                        <div className="mt-8">
-                          <p className="text-base text-white">{voiceState.message}</p>
-                          <div className="mt-6">
-                            <Button
-                              variant="secondary"
-                              onClick={() => setVoiceState({ status: 'idle' })}
-                            >
-                              Try again
-                            </Button>
-                          </div>
-                        </div>
-                      ) : null}
-
-                      {voiceState.status === 'placeholder' ? (
-                        <div className="mt-10 rounded-2xl border border-[#f5b400]/20 bg-black/40 p-6">
-                          <div className="flex items-center justify-between gap-4">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#9ca3af]">
-                              Voice close · simulation
-                            </p>
-                          </div>
-                          <div className="mt-6">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#9ca3af]">
-                              Prospect
-                            </p>
-                            <p className="mt-3 text-base text-white">
-                              {voiceState.phase === 'redeemed'
-                                ? '“Okay, I can talk to them Thursday.”'
-                                : '“I just need to run this by my team.”'}
-                            </p>
-                          </div>
-
-                          {voiceState.phase === 'prompt' ? (
-                            <div className="mt-8">
-                              <Button
-                                variant="secondary"
-                                onClick={() =>
-                                  setVoiceState({
-                                    status: 'placeholder',
-                                    phase: 'interrupt',
-                                  })
-                                }
-                              >
-                                I answered out loud
-                              </Button>
-                            </div>
-                          ) : null}
-
-                          {voiceState.phase === 'interrupt' ? (
-                            <div className="mt-8 space-y-6 border-t border-white/[0.08] pt-6">
-                              <div>
-                                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f5b400]">
-                                  Sherpa
-                                </p>
-                                <p className="mt-3 text-base text-[#d1d5db]">
-                                  Stop.
-                                </p>
-                                <p className="mt-2 text-base text-[#d1d5db]">
-                                  You softened it.
-                                </p>
-                                <p className="mt-2 text-base text-[#d1d5db]">
-                                  Say it tighter.
-                                </p>
-                              </div>
-                              <Button
-                                onClick={() =>
-                                  setVoiceState({
-                                    status: 'placeholder',
-                                    phase: 'redeemed',
-                                  })
-                                }
-                              >
-                                Run it again
-                              </Button>
-                            </div>
-                          ) : null}
-
-                          {voiceState.phase === 'redeemed' ? (
-                            <div className="mt-8 space-y-6 border-t border-white/[0.08] pt-6">
-                              <div>
-                                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#f5b400]">
-                                  Sherpa
-                                </p>
-                                <p className="mt-3 text-base font-semibold text-white">
-                                  There.
-                                </p>
-                                <p className="mt-2 text-base text-[#d1d5db]">
-                                  Now the deal stays alive.
-                                </p>
-                              </div>
-                            </div>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </Card>
-
-                    <Card className="border-[#f5b400]/20">
+                    {voiceDone ? (
+                      <Card className="border-[#f5b400]/20">
                       <p className="text-base leading-relaxed text-[#d1d5db]">
                         There&apos;s another place in this call where you gave up
                         leverage before this even happened.
@@ -550,7 +405,8 @@ export function DemoReview() {
                           Run the full call — $297/month
                         </Button>
                       </div>
-                    </Card>
+                      </Card>
+                    ) : null}
                   </div>
                 ) : null}
               </motion.div>
