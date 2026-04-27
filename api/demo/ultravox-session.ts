@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { getRedis, sessionKey } from '../_lib/kv.js'
+import { analysisKey, getRedis, sessionKey } from '../_lib/kv.js'
 import { optionsResponse, withCors } from '../_lib/cors.js'
 
 export const config = {
@@ -17,6 +17,26 @@ const sessionSchema = z.object({
   dealValue: z.number().optional().default(0),
   dealsPerMonth: z.number().optional().default(0),
   closeRate: z.number().optional().default(0),
+})
+
+const issueTypeSchema = z.enum([
+  'approval_deferral',
+  'pricing_uncertainty',
+  'usage_metering_concern',
+  'technical_scope_confusion',
+  'value_gap',
+  'next_step_loss',
+  'overexplaining',
+  'general_control_loss',
+])
+
+const analysisSchema = z.object({
+  breakpointProspectLine: z.string().optional().default(''),
+  repResponseLine: z.string().optional().default(''),
+  correctedMove: z.string().optional().default(''),
+  issueType: issueTypeSchema.optional().default('approval_deferral'),
+  roleplayProspectLine: z.string().optional().default(''),
+  roleplayTargetMove: z.string().optional().default(''),
 })
 
 function getEnv() {
@@ -38,6 +58,10 @@ export default async function handler(req: Request) {
     if (!session) return withCors(req, new Response('Not Found', { status: 404 }))
 
     const s = sessionSchema.parse(session)
+    const analysisRaw = await redis.get(analysisKey(body.sid))
+    const analysis = analysisSchema.safeParse(analysisRaw).success
+      ? analysisSchema.parse(analysisRaw)
+      : analysisSchema.parse({})
 
     const env = getEnv()
     const apiKey = env.ULTRAVOX_API_KEY
@@ -49,6 +73,19 @@ export default async function handler(req: Request) {
       )
     }
 
+    const breakpointProspectLine =
+      analysis.roleplayProspectLine?.trim() ||
+      analysis.breakpointProspectLine ||
+      'I just need to run this by my team.'
+
+    const correctedMove =
+      analysis.correctedMove?.trim() ||
+      'What typically needs to happen on your side for this to get approved?'
+
+    const repResponseLine =
+      analysis.repResponseLine?.trim() ||
+      'Yeah of course, that makes sense. Let me know what they say.'
+
     const payload = {
       templateContext: {
         offer: s.offer || '',
@@ -57,9 +94,12 @@ export default async function handler(req: Request) {
         dealValue: String(s.dealValue || ''),
         dealsPerMonth: String(s.dealsPerMonth || ''),
         closeRate: String(s.closeRate || ''),
-        correctedMove: 'What typically needs to happen on your side for this to get approved?',
-        breakpointProspectLine: 'I just need to run this by my team.',
-        repResponseLine: 'Yeah of course, that makes sense. Let me know what they say.',
+        issueType: analysis.issueType,
+        roleplayProspectLine: analysis.roleplayProspectLine || breakpointProspectLine,
+        roleplayTargetMove: analysis.roleplayTargetMove,
+        correctedMove,
+        breakpointProspectLine,
+        repResponseLine,
       },
       metadata: {
         sherpaMode: 'demo_voice_close',

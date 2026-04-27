@@ -137,7 +137,7 @@ export function DemoFunnel() {
   }
 
   const sendRoleplay = () => {
-    const ev = evaluateRoleplayAttempt(roleplayInput)
+    const ev = evaluateRoleplayAttempt(roleplayInput, 'approval_deferral')
     setRoleplayResult(ev)
   }
 

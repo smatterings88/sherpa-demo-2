@@ -14,6 +14,16 @@ export type DemoSubmission = {
   closeRate: number
 }
 
+export type DemoIssueType =
+  | 'approval_deferral'
+  | 'pricing_uncertainty'
+  | 'usage_metering_concern'
+  | 'technical_scope_confusion'
+  | 'value_gap'
+  | 'next_step_loss'
+  | 'overexplaining'
+  | 'general_control_loss'
+
 export type DemoAnalysis = {
   contextLine: string
   breakpointProspectLine: string
@@ -22,6 +32,9 @@ export type DemoAnalysis = {
   behaviorPattern: string
   moneyPain: string
   correctedMove: string
+  issueType: DemoIssueType
+  roleplayProspectLine: string
+  roleplayTargetMove: string
 }
 
 export type RoleplayEvaluation = {

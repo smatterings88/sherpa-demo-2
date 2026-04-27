@@ -123,8 +123,18 @@ export function DemoReview() {
     return `${s.offer || 'Offer'}. ${s.buyer || 'Buyer'}. ${s.feltOff || 'Felt off.'}`
   }, [sessionState])
 
+  const roleplayProspectLine = useMemo(() => {
+    if (analysisState.status !== 'ready') {
+      return 'I just need to run this by my team.'
+    }
+    const line = analysisState.analysis.roleplayProspectLine?.trim()
+    if (line) return line
+    return 'I just need to run this by my team.'
+  }, [analysisState])
+
   const runRoleplay = () => {
-    const ev = evaluateRoleplayAttempt(roleText)
+    if (analysisState.status !== 'ready') return
+    const ev = evaluateRoleplayAttempt(roleText, analysisState.analysis.issueType)
     setRoleEval(ev)
   }
 
@@ -318,7 +328,7 @@ export function DemoReview() {
                           AI Prospect
                         </p>
                         <p className="mt-3 text-base text-white">
-                          “I just need to run this by my team.”
+                          “{roleplayProspectLine}”
                         </p>
                       </div>
                       <div className="mt-6">

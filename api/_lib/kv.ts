@@ -22,3 +22,9 @@ export function sessionKey(sessionId: string) {
   return `${SESSION_PREFIX}${sessionId}`
 }
 
+export const ANALYSIS_PREFIX = 'sherpa_demo_analysis:'
+
+export function analysisKey(sessionId: string) {
+  return `${ANALYSIS_PREFIX}${sessionId}`
+}
+
