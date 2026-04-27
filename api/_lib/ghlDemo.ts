@@ -1,8 +1,8 @@
 const GHL_BASE_URL = 'https://rest.gohighlevel.com/v1'
 
 export const GHL_DEMO_TAGS = {
-  SUBMITTED_TRANSCRIPT: 'sherpa --> submitted transcript',
-  DID_TEST_CALL: 'sherpa --> did test call',
+  SUBMITTED_TRANSCRIPT: 'sherpa demo--> submitted transcript',
+  DID_TEST_CALL: 'sherpa demo--> did test call',
 } as const
 
 export type GhlContact = {

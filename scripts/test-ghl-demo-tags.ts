@@ -7,19 +7,19 @@ async function main() {
   const t1 = await upsertGhlDemoContactAndTag({
     email,
     name: 'Sherpa Demo Test',
-    tag: 'sherpa --> submitted transcript',
+    tag: 'sherpa demo--> submitted transcript',
   })
 
   const t2 = await upsertGhlDemoContactAndTag({
     email,
     name: 'Sherpa Demo Test',
-    tag: 'sherpa --> submitted transcript',
+    tag: 'sherpa demo--> submitted transcript',
   })
 
   const t3 = await upsertGhlDemoContactAndTag({
     email,
     name: 'Sherpa Demo Test',
-    tag: 'sherpa --> did test call',
+    tag: 'sherpa demo--> did test call',
   })
 
   for (const row of [t1, t2, t3]) {

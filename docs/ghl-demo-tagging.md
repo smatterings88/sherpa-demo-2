@@ -2,8 +2,8 @@
 
 This repo tracks **two demo lifecycle moments** in GoHighLevel using the **HighLevel REST API v1**:
 
-1. **Transcript submitted** → tag: `sherpa --> submitted transcript`
-2. **Voice/test call successfully started** → tag: `sherpa --> did test call`
+1. **Transcript submitted** → tag: `sherpa demo--> submitted transcript`
+2. **Voice/test call successfully started** → tag: `sherpa demo--> did test call`
 
 All GHL calls are **server-only** (Vercel functions). The browser never receives `GHL_API_KEY`.
 
@@ -55,8 +55,8 @@ This is intentionally **not** included in production responses.
 
 ## Exact tag strings
 
-- `sherpa --> submitted transcript`
-- `sherpa --> did test call`
+- `sherpa demo--> submitted transcript`
+- `sherpa demo--> did test call`
 
 ## How duplicate tags are avoided
 
