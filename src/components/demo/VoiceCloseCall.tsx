@@ -6,6 +6,13 @@ import { startDemoVoiceCall } from '../../lib/ultravoxDemoClient'
 
 type VoiceCloseState = 'idle' | 'creating' | 'connecting' | 'live' | 'ended' | 'error'
 
+const END_PHRASES = [
+  'there. now the deal stays alive',
+  "that's the demo",
+  'this demo is complete',
+  'run the full call',
+] as const
+
 export function VoiceCloseCall({
   sid,
   onComplete,
@@ -16,6 +23,8 @@ export function VoiceCloseCall({
   const [state, setState] = useState<VoiceCloseState>('idle')
   const [errorFlag, setErrorFlag] = useState(false)
   const endRef = useRef<null | (() => void)>(null)
+  const endScheduledRef = useRef(false)
+  const localTimerRef = useRef<number | null>(null)
 
   const statusLine = useMemo(() => {
     if (state === 'creating') return 'Creating the voice close…'
@@ -25,8 +34,23 @@ export function VoiceCloseCall({
     return ''
   }, [state])
 
+  const endCleanly = (delayMs: number) => {
+    if (endScheduledRef.current) return
+    endScheduledRef.current = true
+    if (localTimerRef.current) {
+      window.clearTimeout(localTimerRef.current)
+      localTimerRef.current = null
+    }
+    window.setTimeout(() => {
+      endRef.current?.()
+      endRef.current = null
+      setState('ended')
+    }, delayMs)
+  }
+
   const onStart = async () => {
     setErrorFlag(false)
+    endScheduledRef.current = false
     setState('creating')
     try {
       const { joinUrl } = await startUltravoxDemoSession(sid)
@@ -38,6 +62,12 @@ export function VoiceCloseCall({
           setErrorFlag(true)
           setState('error')
         },
+        onTranscriptText: (msg) => {
+          const text = msg.text.toLowerCase()
+          if (END_PHRASES.some((p) => text.includes(p))) {
+            endCleanly(1200)
+          }
+        },
       })
       endRef.current = conn.end
     } catch {
@@ -47,15 +77,38 @@ export function VoiceCloseCall({
   }
 
   const onEnd = () => {
-    endRef.current?.()
-    endRef.current = null
-    setState('ended')
+    endCleanly(0)
   }
+
+  useEffect(() => {
+    if (state !== 'live') return
+    if (localTimerRef.current) window.clearTimeout(localTimerRef.current)
+    localTimerRef.current = window.setTimeout(() => {
+      endCleanly(0)
+    }, 120_000)
+    return () => {
+      if (localTimerRef.current) {
+        window.clearTimeout(localTimerRef.current)
+        localTimerRef.current = null
+      }
+    }
+  }, [state])
 
   useEffect(() => {
     if (state !== 'ended') return
     onComplete()
   }, [state, onComplete])
+
+  useEffect(() => {
+    return () => {
+      if (localTimerRef.current) {
+        window.clearTimeout(localTimerRef.current)
+        localTimerRef.current = null
+      }
+      endRef.current?.()
+      endRef.current = null
+    }
+  }, [])
 
   return (
     <Card id="voice-close" className="border-white/[0.14]">
