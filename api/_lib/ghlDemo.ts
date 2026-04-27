@@ -43,7 +43,7 @@ function devLog(payload: Record<string, unknown>) {
 }
 
 function sleep(ms: number) {
-  return new Promise((r) => window.setTimeout(r, ms))
+  return new Promise((r) => globalThis.setTimeout(r, ms))
 }
 
 function jitterMs(base: number) {
@@ -119,11 +119,11 @@ function ghlHeaders() {
 
 async function ghlFetch(path: string, init: RequestInit, timeoutMs = 10_000): Promise<Response> {
   const controller = new AbortController()
-  const t = window.setTimeout(() => controller.abort(), timeoutMs)
+  const t = globalThis.setTimeout(() => controller.abort(), timeoutMs)
   try {
     return await fetch(`${GHL_BASE_URL}${path}`, { ...init, signal: controller.signal })
   } finally {
-    window.clearTimeout(t)
+    globalThis.clearTimeout(t)
   }
 }
 
