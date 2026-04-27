@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Card } from '../Card'
 import { Button } from '../Button'
 import { startUltravoxDemoSession } from '../../lib/demoApi'
@@ -6,12 +6,21 @@ import { startDemoVoiceCall } from '../../lib/ultravoxDemoClient'
 
 type VoiceCloseState = 'idle' | 'creating' | 'connecting' | 'live' | 'ended' | 'error'
 
-const END_PHRASES = [
-  'there. now the deal stays alive',
+const SUCCESS_MARKERS = ['there. now the deal stays alive'] as const
+
+const TERMINAL_MARKERS = [
   "that's the demo",
   'this demo is complete',
-  'run the full call',
+  "time. that's enough for the demo",
 ] as const
+
+function normalizeTranscriptText(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[’‘]/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+}
 
 export function VoiceCloseCall({
   sid,
@@ -22,50 +31,88 @@ export function VoiceCloseCall({
 }) {
   const [state, setState] = useState<VoiceCloseState>('idle')
   const [errorFlag, setErrorFlag] = useState(false)
+  const [successDetected, setSuccessDetected] = useState(false)
   const endRef = useRef<null | (() => void)>(null)
-  const endScheduledRef = useRef(false)
-  const localTimerRef = useRef<number | null>(null)
+  const completedRef = useRef(false)
+  const maxTimerRef = useRef<number | null>(null)
+  const terminalTimerRef = useRef<number | null>(null)
+  const successFallbackTimerRef = useRef<number | null>(null)
 
   const statusLine = useMemo(() => {
     if (state === 'creating') return 'Creating the voice close…'
     if (state === 'connecting') return 'Connecting your mic…'
-    if (state === 'live') return 'Voice close is live. Keep it tight.'
+    if (state === 'live') {
+      if (successDetected) return 'Move landed. Let Alex close the drill.'
+      return 'Voice close is live. Keep it tight.'
+    }
     if (state === 'error') return "Voice didn’t connect."
     return ''
-  }, [state])
+  }, [state, successDetected])
 
-  const endCleanly = (delayMs: number) => {
-    if (endScheduledRef.current) return
-    endScheduledRef.current = true
-    if (localTimerRef.current) {
-      window.clearTimeout(localTimerRef.current)
-      localTimerRef.current = null
-    }
+  const clearTimers = useCallback(() => {
+    if (maxTimerRef.current) window.clearTimeout(maxTimerRef.current)
+    if (terminalTimerRef.current) window.clearTimeout(terminalTimerRef.current)
+    if (successFallbackTimerRef.current) window.clearTimeout(successFallbackTimerRef.current)
+    maxTimerRef.current = null
+    terminalTimerRef.current = null
+    successFallbackTimerRef.current = null
+  }, [])
+
+  const complete = useCallback(
+    (opts?: { delayMs?: number }) => {
+    if (completedRef.current) return
+    completedRef.current = true
+    clearTimers()
+
+    const delayMs = opts?.delayMs ?? 0
     window.setTimeout(() => {
       endRef.current?.()
       endRef.current = null
       setState('ended')
+      onComplete()
     }, delayMs)
-  }
+    },
+    [clearTimers, onComplete],
+  )
 
   const onStart = async () => {
     setErrorFlag(false)
-    endScheduledRef.current = false
+    setSuccessDetected(false)
+    completedRef.current = false
+    clearTimers()
     setState('creating')
     try {
       const { joinUrl } = await startUltravoxDemoSession(sid)
       setState('connecting')
       const conn = await startDemoVoiceCall(joinUrl, {
         onConnected: () => setState('live'),
-        onEnded: () => setState('ended'),
+        onEnded: () => complete(),
         onError: () => {
           setErrorFlag(true)
           setState('error')
         },
         onTranscriptText: (msg) => {
-          const text = msg.text.toLowerCase()
-          if (END_PHRASES.some((p) => text.includes(p))) {
-            endCleanly(1200)
+          const text = normalizeTranscriptText(msg.text)
+          const speaker = msg.speaker?.toLowerCase()
+          const speakerKnown = !!speaker
+          const isAgent = !speakerKnown || speaker === 'agent'
+
+          if (isAgent && SUCCESS_MARKERS.some((p) => text.includes(p))) {
+            if (!successDetected) setSuccessDetected(true)
+            if (!successFallbackTimerRef.current) {
+              successFallbackTimerRef.current = window.setTimeout(() => {
+                complete()
+              }, 7000)
+            }
+            return
+          }
+
+          if ((isAgent || !speakerKnown) && TERMINAL_MARKERS.some((p) => text.includes(p))) {
+            if (!terminalTimerRef.current) {
+              terminalTimerRef.current = window.setTimeout(() => {
+                complete()
+              }, 2500)
+            }
           }
         },
       })
@@ -77,38 +124,30 @@ export function VoiceCloseCall({
   }
 
   const onEnd = () => {
-    endCleanly(0)
+    complete()
   }
 
   useEffect(() => {
     if (state !== 'live') return
-    if (localTimerRef.current) window.clearTimeout(localTimerRef.current)
-    localTimerRef.current = window.setTimeout(() => {
-      endCleanly(0)
-    }, 120_000)
+    if (maxTimerRef.current) window.clearTimeout(maxTimerRef.current)
+    maxTimerRef.current = window.setTimeout(() => {
+      complete()
+    }, 150_000)
     return () => {
-      if (localTimerRef.current) {
-        window.clearTimeout(localTimerRef.current)
-        localTimerRef.current = null
+      if (maxTimerRef.current) {
+        window.clearTimeout(maxTimerRef.current)
+        maxTimerRef.current = null
       }
     }
-  }, [state])
-
-  useEffect(() => {
-    if (state !== 'ended') return
-    onComplete()
-  }, [state, onComplete])
+  }, [state, complete])
 
   useEffect(() => {
     return () => {
-      if (localTimerRef.current) {
-        window.clearTimeout(localTimerRef.current)
-        localTimerRef.current = null
-      }
+      clearTimers()
       endRef.current?.()
       endRef.current = null
     }
-  }, [])
+  }, [clearTimers])
 
   return (
     <Card id="voice-close" className="border-white/[0.14]">
