@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { analysisKey, getRedis, sessionKey } from '../_lib/kv.js'
 import { optionsResponse, withCors } from '../_lib/cors.js'
+import { GHL_DEMO_TAGS, safeTrackGhlDemoTag } from '../_lib/ghlDemo.js'
 
 export const config = {
   runtime: 'edge',
@@ -11,6 +12,8 @@ const bodySchema = z.object({
 })
 
 const sessionSchema = z.object({
+  email: z.string().email().optional(),
+  name: z.string().optional().default(''),
   offer: z.string().optional().default(''),
   buyer: z.string().optional().default(''),
   feltOff: z.string().optional().default(''),
@@ -207,6 +210,16 @@ export default async function handler(req: Request) {
       )
     }
 
+    const ghlTracking = await safeTrackGhlDemoTag({
+      email: s.email,
+      name: s.name,
+      tag: GHL_DEMO_TAGS.DID_TEST_CALL,
+      context: 'demo_voice_call_started',
+    })
+
+    const vercelEnv = process.env.VERCEL_ENV
+    const includeGhlDebug = vercelEnv && vercelEnv !== 'production'
+
     return withCors(
       req,
       new Response(
@@ -214,6 +227,15 @@ export default async function handler(req: Request) {
           provider: 'ultravox',
           callId,
           joinUrl,
+          ...(includeGhlDebug
+            ? {
+                ghlTracking: ghlTracking.ok
+                  ? { ok: true, skipped: false, tagAction: ghlTracking.result.tagAction }
+                  : ghlTracking.skipped
+                    ? { ok: false, skipped: true, reason: ghlTracking.reason }
+                    : { ok: false, skipped: false, reason: ghlTracking.reason },
+              }
+            : {}),
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
       ),

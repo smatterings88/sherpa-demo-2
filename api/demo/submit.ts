@@ -2,6 +2,7 @@ import { z } from 'zod'
 import { getRedis, sessionKey } from '../_lib/kv.js'
 import { getOpenAI } from '../_lib/openai.js'
 import { optionsResponse, withCors } from '../_lib/cors.js'
+import { GHL_DEMO_TAGS, safeTrackGhlDemoTag } from '../_lib/ghlDemo.js'
 
 export const config = {
   runtime: 'edge',
@@ -119,6 +120,13 @@ export default async function handler(req: Request) {
     const redis = getRedis()
     await redis.set(sessionKey(sessionId), session, { ex: 60 * 60 * 24 })
 
+    const ghlTracking = await safeTrackGhlDemoTag({
+      email: parsed.email,
+      name: parsed.name,
+      tag: GHL_DEMO_TAGS.SUBMITTED_TRANSCRIPT,
+      context: 'demo_transcript_submission',
+    })
+
     const baseUrl = process.env.DEMO_BASE_URL
     if (!baseUrl) {
       return withCors(req, new Response('DEMO_BASE_URL is not set.', { status: 500 }))
@@ -128,12 +136,30 @@ export default async function handler(req: Request) {
       sessionId,
     )}`
 
+    const vercelEnv = process.env.VERCEL_ENV
+    const includeGhlDebug = vercelEnv && vercelEnv !== 'production'
+
     return withCors(
       req,
-      new Response(JSON.stringify({ sessionId, redirectUrl }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      }),
+      new Response(
+        JSON.stringify({
+          sessionId,
+          redirectUrl,
+          ...(includeGhlDebug
+            ? {
+                ghlTracking: ghlTracking.ok
+                  ? { ok: true, skipped: false, tagAction: ghlTracking.result.tagAction }
+                  : ghlTracking.skipped
+                    ? { ok: false, skipped: true, reason: ghlTracking.reason }
+                    : { ok: false, skipped: false, reason: ghlTracking.reason },
+              }
+            : {}),
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      ),
     )
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : 'Invalid request.'
